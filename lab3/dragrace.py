@@ -1,17 +1,16 @@
 import matplotlib.pyplot as plt
-import numpy as np
 from defines import NexusCount
 
 def dragrace(n: int):
     '''Прогонка'''
     h = 1.0/n
-    x = np.linspace(0, 1, n+1)
+    x = [i / n for i in range(0, n + 1)]
     
     # Инициализация массивов
-    a = np.zeros(n+1)
-    b = np.zeros(n+1)
-    c = np.zeros(n+1)
-    d = np.zeros(n+1)
+    a = [0] * (n + 1)
+    b = [0] * (n + 1)
+    c = [0] * (n + 1)
+    d = [0] * (n + 1)
     
     # Граничное условие слева
     b[0] = 1
@@ -31,7 +30,7 @@ def dragrace(n: int):
     d[n] = 1
     
     # Метод прогонки
-    u = np.zeros(n+1)
+    u = [0] * (n + 1)
     
     # Прямой ход
     for i in range(1, n+1):
