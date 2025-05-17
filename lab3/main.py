@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
-import galerkin
-import galerkinNumpy
-import dragrace
+import Galerkin.galerkin as galerkin
+import Galerkin.galerkinNumpy as galerkinNumpy
+import Galerkin.dragrace as dragrace
 from defines import koefCount, NexusCount
 
 def main():
