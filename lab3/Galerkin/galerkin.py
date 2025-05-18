@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
-from SLEcreator import createSLE, expKoefFactor, expRes, expBasis
-from defines import koefCount, h
+from Galerkin.SLEcreator import createSLE, expKoefFactor, expRes, expBasis
 
 # Транспонирование матрицы
 transpose = lambda matrix: [[matrix[j][i] for j in range(len(matrix))] for i in range(len(matrix[0]))]
@@ -44,7 +43,7 @@ def least_squares(A, b):
     Atb = matmul(At, [[bi] for bi in b])
     return gauss_elimination(AtA, [row[0] for row in Atb])
 
-def solute() -> tuple[list[float], list[float], float]:
+def solute(koefCount: int, h: float) -> tuple[list[float], list[float], float]:
     A, b = createSLE(koefCount, expKoefFactor, expRes)
     K = least_squares(A, b)
 
@@ -54,6 +53,8 @@ def solute() -> tuple[list[float], list[float], float]:
     return (Xaxis, Yaxis, residual_ssq(A, K, b))
 
 def main():
+    koefCount = 6
+    h = 0.001
     A, b = createSLE(koefCount, expKoefFactor, expRes)
     K = least_squares(A, b)
     print("Коэффициенты: ", K)

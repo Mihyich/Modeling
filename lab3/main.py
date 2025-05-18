@@ -2,12 +2,12 @@ import matplotlib.pyplot as plt
 import Galerkin.galerkin as galerkin
 import Galerkin.galerkinNumpy as galerkinNumpy
 import Galerkin.dragrace as dragrace
-from defines import koefCount, NexusCount
+from defines import koefCount, NexusCount, h
 
 def main():
-    Xaxis_g, Yaxis_g, rssq_g = galerkin.solute()
-    Xaxis_gnp, Yaxis_gnp, rssq_gnp = galerkinNumpy.solute()
-    Xaxis_dr, Yaxis_dr = dragrace.solute()
+    Xaxis_g, Yaxis_g, rssq_g = galerkin.solute(koefCount, h)
+    Xaxis_gnp, Yaxis_gnp, rssq_gnp = galerkinNumpy.solute(koefCount, h)
+    Xaxis_dr, Yaxis_dr = dragrace.solute(NexusCount)
 
     print(f"Сумма квадратов невязок в МНК: {rssq_g}")
     print(f"Сумма квадратов невязок в Numpy: {rssq_gnp}")

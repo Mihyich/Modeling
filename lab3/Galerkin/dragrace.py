@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-from defines import NexusCount
 
 def dragrace(n: int):
     '''Прогонка'''
@@ -45,10 +44,11 @@ def dragrace(n: int):
     
     return x, u
 
-def solute() -> tuple[list[float], list[float]]:
+def solute(NexusCount: int) -> tuple[list[float], list[float]]:
     return dragrace(NexusCount)
 
 def main():
+    NexusCount = 100
     x, u = dragrace(NexusCount)
 
     plt.plot(x, u, "b-", linewidth=2, label='u(x)')

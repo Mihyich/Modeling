@@ -1,9 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from SLEcreator import createSLE, expKoefFactor, expRes, expBasis
-from defines import koefCount, h
+from Galerkin.SLEcreator import createSLE, expKoefFactor, expRes, expBasis
 
-def solute() -> tuple[list[float], list[float], any]:
+def solute(koefCount: int, h: float) -> tuple[list[float], list[float], any]:
     A, b = createSLE(koefCount, expKoefFactor, expRes)
     Anp, bnp = np.array(A), np.array(b)
 
@@ -23,6 +22,8 @@ def solute() -> tuple[list[float], list[float], any]:
     return (Xaxis, Yaxis, rssq)
 
 def main():
+    koefCount = 6
+    h = 0.001
     A, b = createSLE(koefCount, expKoefFactor, expRes)
     Anp, bnp = np.array(A), np.array(b)
 
