@@ -1,13 +1,14 @@
 import matplotlib.pyplot as plt
 from RadiationTransfer.absoption import initAbsorptionCoefTable
-from RadiationTransfer.solution import solute
+from RadiationTransfer.solution import soluteODE
 from RadiationTransfer.defines import N, T0, Tw, R, p, filePath, variant
 
 def main():
     T, k = initAbsorptionCoefTable(filePath, variant)
-    r, u = solute(N, T0, Tw, R, p, T, k)
+    r, u, u_p = soluteODE(N, T0, Tw, R, p, T, k)
 
     plt.plot(r, u, "r", linewidth=1, label=f'u(r)')
+    plt.plot(r, u_p, "g", linewidth=1, label=f'u_p(r)')
     plt.title(f"Решение ОДУ")
     plt.xlabel("r")
     plt.ylabel("u(r)")

@@ -11,11 +11,11 @@ PlanckFunc = lambda x, T0, Tw, R, p: 0.0003084 / (exp(47990 / TempFieldFunc(x, T
 RectificateAbsorptionCoefFunc = lambda x, T, k, T0, Tw, R, p: logInterpKT(T, k, TempFieldFunc(x, T0, Tw, R, p))
 
 
-def solute(
+def soluteODE(
         N: int,
         T0: float, Tw: float,
         R: float, p: float,
-        T: list[float], k: list[float]) -> tuple[list[float], list[float]]:
+        T: list[float], k: list[float]) -> tuple[list[float], list[float], list[float]]:
     """Решение ОДУ"""
 
     h = R / N
@@ -90,4 +90,4 @@ def solute(
     # Граничное условие при i=N для u[i], r=R (стенка): u_0 = u_1
     u[0] = u[1]
     
-    return r, u
+    return r, u, u_p        
