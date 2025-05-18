@@ -1,7 +1,5 @@
 from math import exp
-from pathlib import Path
-from absoption import initAbsorptionCoefTable, logInterpKT
-import matplotlib.pyplot as plt
+from RadiationTransfer.absoption import logInterpKT
 
 # Температурное поле
 TempFieldFunc = lambda x, T0, Tw, R, p: (Tw - T0) * (x / R)**p + T0
@@ -17,14 +15,13 @@ def solute(
         N: int,
         T0: float, Tw: float,
         R: float, p: float,
-        T: list[float], k: list[float],
-        upFunc: callable, kFunc: callable) -> tuple[list[float], list[float]]:
+        T: list[float], k: list[float]) -> tuple[list[float], list[float]]:
     """Решение ОДУ"""
 
     h = R / N
     r = [i / N * R for i in range(0, N + 1)]
-    u_p = [upFunc(ri, T0, Tw, R, p) for ri in r]
-    kinterp = [kFunc(ri, T, k, T0, Tw, R, p) for ri in r]
+    u_p = [PlanckFunc(ri, T0, Tw, R, p) for ri in r]
+    kinterp = [RectificateAbsorptionCoefFunc(ri, T, k, T0, Tw, R, p) for ri in r]
 
     A = [0] * (N+1)
     B = [0] * (N+1)
@@ -94,28 +91,3 @@ def solute(
     u[0] = u[1]
     
     return r, u
-
-
-def main():
-    N = 100
-    T0 = 10**4
-    Tw = 2000
-    R = 0.35
-    p = 4
-    filePath = Path.cwd() / Path("lab3/data.csv")
-    variant = 1
-    T, k = initAbsorptionCoefTable(filePath, variant)
-    r, u = solute(N, T0, Tw, R, p, T, k, PlanckFunc, RectificateAbsorptionCoefFunc)
-
-    plt.plot(r, u, "r", linewidth=1, label=f'u(r)')
-    plt.title(f"Решение ОДУ")
-    plt.xlabel("r")
-    plt.ylabel("u(r)")
-    plt.grid(True)
-    plt.legend()
-    plt.gcf().canvas.manager.set_window_title("График решение ОДУ")
-    plt.show()
-
-
-if __name__ == "__main__":
-    main()
