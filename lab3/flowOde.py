@@ -28,7 +28,7 @@ def main():
     plt.legend()
 
     plt.subplot(2, 2, 4)
-    plt.plot(r, Fdif, "r-", linewidth=1, label=f'F(z): Поток')
+    plt.plot(r, Fint, "r-", linewidth=1, label=f'F(z): Поток')
     plt.xlabel("z")
     plt.ylabel("F(z)")
     plt.title(f"Определение потока интегрированием")
