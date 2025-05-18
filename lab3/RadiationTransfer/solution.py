@@ -1,5 +1,7 @@
 from math import exp
-
+from pathlib import Path
+from absoption import initAbsorptionCoefTable, logInterpKT
+import matplotlib.pyplot as plt
 
 # Температурное поле
 TempFieldFunc = lambda x, T0, Tw, R, p: (Tw - T0) * (x / R)**p + T0
@@ -7,30 +9,33 @@ TempFieldFunc = lambda x, T0, Tw, R, p: (Tw - T0) * (x / R)**p + T0
 # Функция Планка
 PlanckFunc = lambda x, T0, Tw, R, p: 0.0003084 / (exp(47990 / TempFieldFunc(x, T0, Tw, R, p)) - 1)
 
+# Функция уточнения коэффициента поглощения
+RectificateAbsorptionCoefFunc = lambda x, T, k, T0, Tw, R, p: logInterpKT(T, k, TempFieldFunc(x, T0, Tw, R, p))
+
 
 def solute(
         N: int,
         T0: float, Tw: float,
         R: float, p: float,
         T: list[float], k: list[float],
-        upFunc: callable) -> tuple[list[float], list[float]]:
+        upFunc: callable, kFunc: callable) -> tuple[list[float], list[float]]:
     """Решение ОДУ"""
 
     h = R / N
     r = [i / N * R for i in range(0, N + 1)]
-    u_p = [upFunc(ri) for ri in r]
+    u_p = [upFunc(ri, T0, Tw, R, p) for ri in r]
+    kinterp = [kFunc(ri, T, k, T0, Tw, R, p) for ri in r]
 
     A = [0] * (N+1)
     B = [0] * (N+1)
     C = [0] * (N+1)
     F = [0] * (N+1)
-    u = [0] * (N+1)
 
     rmp = lambda i: r[i] + h / 2
     rmm = lambda i: r[i] - h / 2
 
-    kmp = lambda i: (k[i] + k[i + 1]) / 2
-    kmm = lambda i: (k[i - 1] + k[i]) / 2
+    kmp = lambda i: (kinterp[i] + kinterp[i + 1]) / 2
+    kmm = lambda i: (kinterp[i - 1] + kinterp[i]) / 2
 
     alphamp = lambda i: rmp(i) / (h * kmp(i))
     alphamm = lambda i: rmm(i) / (h * kmm(i))
@@ -51,39 +56,65 @@ def solute(
 
     # Внутренние точки (i = 1 ... N-1)
     for i in range(1, N):
-        A[i] = Af[i]
-        B[i] = Bf[i]
-        C[i] = Cf[i]
-        F[i] = Ff[i]
+        A[i] = Af(i)
+        B[i] = Bf(i)
+        C[i] = Cf(i)
+        F[i] = Ff(i)
     
     # Граничное условие при r=R (i=N)
     A[N] = 1.0
     B[N] = -4.0
-    C[N] = 3 + 2.34 * h * k[N]
+    C[N] = 3 + 2.34 * h * kinterp[N]
     F[N] = 0.0
 
     # Метод прогонки
-    Alpha = [0] * (N+1)
-    Beta = [0] * (N+1)
+    u = [0] * (N+1)
+    zita = [0] * (N+1)
+    ita = [0] * (N+1)
+
+    # Граничное условие при i=0 для u[i], r=0 (центр)
+    zita[0] = 1.0
+    ita[0] = 0.0
 
     # Прямой ход
-    Alpha[1] = -C[1] / B[1]
-    Beta[1] = F[1] / B[1]
-    for i in range(2, N+1):
-        denom = B[i] + A[i] * Alpha[i-1]
-        Alpha[i] = -C[i] / denom if i < N else 0.0
-        Beta[i] = (F[i] - A[i] * Beta[i-1]) / denom
+    for i in range(1, N+1):
+        denom = B[i] + A[i] * zita[i-1]
+        zita[i] = -C[i] / denom
+        ita[i] = (F[i] - A[i] * ita[i-1]) / denom
+
+    # Граничное условие при i=N для u[i], r=R (стенка)
+    denom = 3 + 2.34 * h * kinterp[N] + 4 * zita[N] - zita[N-1] * zita[N]
+    u[N] = (4 * ita[N] - zita[N-1] * ita[N] - ita[N-1]) / denom
     
     # Обратный ход
-    u[N] = (4 * Beta[N-1] - Beta[N-2]) / (3 + 2.34 * h * k[N] + 4 * Alpha[N-1] - Alpha[N-2])
-    for i in range(N-1, -1, -1):
-        u[i] = Alpha[i] * u[i+1] + Beta[i] if i > 0 else u[1]
+    for i in range(N-1, 0, -1):
+        u[i] = zita[i] * u[i+1] + ita[i]
+    
+    # Граничное условие при i=N для u[i], r=R (стенка): u_0 = u_1
+    u[0] = u[1]
     
     return r, u
 
 
 def main():
-    pass
+    N = 100
+    T0 = 10**4
+    Tw = 2000
+    R = 0.35
+    p = 4
+    filePath = Path.cwd() / Path("lab3/data.csv")
+    variant = 1
+    T, k = initAbsorptionCoefTable(filePath, variant)
+    r, u = solute(N, T0, Tw, R, p, T, k, PlanckFunc, RectificateAbsorptionCoefFunc)
+
+    plt.plot(r, u, "r", linewidth=1, label=f'u(r)')
+    plt.title(f"Решение ОДУ")
+    plt.xlabel("r")
+    plt.ylabel("u(r)")
+    plt.grid(True)
+    plt.legend()
+    plt.gcf().canvas.manager.set_window_title("График решение ОДУ")
+    plt.show()
 
 
 if __name__ == "__main__":
