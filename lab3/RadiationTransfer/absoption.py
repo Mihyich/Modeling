@@ -53,15 +53,3 @@ def logInterpKT(T: list[float], k: list[float], t: float) -> float:
             break
     
     return res
-
-
-def main():
-    filePath = Path('data.csv')
-    variant = 1
-    T, k = initAbsorptionCoefTable(filePath, variant)
-    t = 3000
-    print(t, logInterpKT(T, k, t))
-
-
-if __name__ == "__main__":
-    main()
