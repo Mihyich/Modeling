@@ -51,28 +51,3 @@ def solute(koefCount: int, h: float) -> tuple[list[float], list[float], float]:
     Yaxis = [expBasis(x, K) for x in Xaxis]
 
     return (Xaxis, Yaxis, residual_ssq(A, K, b))
-
-def main():
-    koefCount = 6
-    h = 0.001
-    A, b = createSLE(koefCount, expKoefFactor, expRes)
-    K = least_squares(A, b)
-    print("Коэффициенты: ", K)
-    print("\nНевязка: ", residual(A, K, b))
-    print("\nСумма квадратов невязок: ", residual_ssq(A, K, b))
-
-    Xaxis = [x * h for x in range(0, int(1 / h) + 1)]
-    Yaxis = [expBasis(x, K) for x in Xaxis]
-
-    plt.plot(Xaxis, Yaxis, "b-", linewidth=2, label='u(x)')
-    plt.title(f"Решение u'' - 2xu' + 2u = x при кол-ве коэффициентов: {koefCount}")
-    plt.xlabel("x")
-    plt.ylabel("u(x)")
-    plt.grid(True)
-    plt.legend()
-    plt.gcf().canvas.manager.set_window_title("График решения дифференциального уравнения (МНК)")
-    plt.show()
-    
-
-# if __name__ == "__main__":
-#     main()

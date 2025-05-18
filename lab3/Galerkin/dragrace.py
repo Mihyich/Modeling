@@ -46,20 +46,3 @@ def dragrace(n: int):
 
 def solute(NexusCount: int) -> tuple[list[float], list[float]]:
     return dragrace(NexusCount)
-
-def main():
-    NexusCount = 100
-    x, u = dragrace(NexusCount)
-
-    plt.plot(x, u, "b-", linewidth=2, label='u(x)')
-    plt.title(f"Решение u'' - 2xu' + 2u = x при кол-ве точек дискретизации = {NexusCount}")
-    plt.xlabel("x")
-    plt.ylabel("u(x)")
-    plt.grid(True)
-    plt.legend()
-    plt.gcf().canvas.manager.set_window_title("График решения дифференциального уравнения (Прогонка)")
-    plt.show()
-    
-
-# if __name__ == "__main__":
-#     main()
