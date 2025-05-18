@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import Galerkin.galerkin as galerkin
 import Galerkin.galerkinNumpy as galerkinNumpy
 import Galerkin.dragrace as dragrace
-from defines import koefCount, NexusCount, h
+from Galerkin.defines import koefCount, NexusCount, h
 
 def main():
     Xaxis_g, Yaxis_g, rssq_g = galerkin.solute(koefCount, h)
