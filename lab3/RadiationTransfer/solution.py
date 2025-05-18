@@ -15,7 +15,7 @@ def soluteODE(
         N: int,
         T0: float, Tw: float,
         R: float, p: float,
-        T: list[float], k: list[float]) -> tuple[list[float], list[float], list[float]]:
+        T: list[float], k: list[float]) -> tuple[list[float], list[float], list[float], list[float]]:
     """Решение ОДУ"""
 
     h = R / N
@@ -90,12 +90,12 @@ def soluteODE(
     # Граничное условие при i=N для u[i], r=R (стенка): u_0 = u_1
     u[0] = u[1]
     
-    return r, u, u_p
+    return r, kinterp, u, u_p
 
 
 def soluteFluxDifferential(
         r: list[float], k: list[float],
-        u: list[float], u_p: list[float]) -> list[float]:
+        u: list[float]) -> list[float]:
     """Вычисление потока F(z) численным дифференцированием 2-ого порядка точности"""
 
     h = r[1] # r_i = i*h
