@@ -90,4 +90,45 @@ def soluteODE(
     # Граничное условие при i=N для u[i], r=R (стенка): u_0 = u_1
     u[0] = u[1]
     
-    return r, u, u_p        
+    return r, u, u_p
+
+
+def soluteFluxDifferential(
+        r: list[float], k: list[float],
+        u: list[float], u_p: list[float]) -> list[float]:
+    """Вычисление потока F(z) численным дифференцированием 2-ого порядка точности"""
+
+    h = r[1] # r_i = i*h
+    N = len(r) - 1
+    F = [0] * (N+1)
+    
+    # Для внутренних точек: i = 1 ... N-1 - центральные разности
+    for i in range(1, N):
+        F[i] = -1/(3*k[i]) * (u[i+1] - u[i-1])/(2*h)
+    
+    # На границах - односторонние разности
+    F[0] = 0.0  # Центр: du/dr=0
+    if N > 1: F[N] = -1/(3*k[N]) * (3*u[N] - 4*u[N-1] + u[N-2])/(2*h)
+
+    return F
+
+
+def soluteFluxIntegral(
+        r: list[float], k: list[float],
+        u: list[float], u_p: list[float],
+        epsilon: float = 1e-10) -> list[float]:
+    """Вычисление потока F(z) интегрированием"""
+
+    h = r[1] # r_i = i*h
+    N = len(r) - 1
+    F = [0] * (N+1)
+    
+    integral = 0.0
+    for i in range(1, N+1):
+        # Метод трапеций для интеграла
+        integrand_prev = r[i-1] * k[i-1] * (u[i-1] - u_p[i-1])
+        integrand_curr = r[i] * k[i] * (u[i] - u_p[i])
+        integral += 0.5 * h * (integrand_prev + integrand_curr)
+        F[i] = -integral / r[i] if r[i] > epsilon else 0.0
+    
+    return F
