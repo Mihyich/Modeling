@@ -16,7 +16,7 @@
 
 $$c_T \frac{\partial T}{\partial t} = \frac{1}{r} \frac{\partial}{\partial r} \left( r \lambda(T) \frac{\partial T}{\partial r} \right) + \sigma(T) E^2 - q(r)$$
 
-$$\frac{1}{r} \frac{d}{dr} \left( r \frac{1}{K(T)} \frac{du}{dr} \right) = 3k(T)(u - u_p(T))$$
+$$\frac{1}{r} \frac{d}{dr} \left( r \frac{1}{K(T)} \frac{du}{dr} \right) = 3K(T)(u - u_p(T))$$
 
 $$E = \frac{1}{2 \pi \int_0^R \sigma(T(r))rdr}$$
 
