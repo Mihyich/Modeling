@@ -26,7 +26,7 @@ $$u_p(r) = \frac{3.084 \cdot 10^{-4}}{\exp{\left( \frac{4.799 \cdot 10^4}{T(r)} 
 
 $$T(r) = (T_w - T_0) \left( \frac{r}{R} \right)^p + T_0$$
 
-$$I(t) = \frac{I_{max}}{I_{min}}t \exp{- \left( \frac{t}{t_{max} - 1} \right)}$$
+$$I(t) = \frac{I_{max}}{I_{min}}t \exp{\left( - \frac{t}{t_{max} - 1} \right)}$$
 
 $R$ - радиус цилиндра, см
 
