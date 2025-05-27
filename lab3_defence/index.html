@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Общий вид решения краевой линейной задачи</title>
+    <link rel="stylesheet" href="./Styles/equation.css">
+    <link rel="stylesheet" href="./Styles/boundary_problems.css">
+    <link rel="stylesheet" href="./Styles/equation_input.css">
+    <link rel="stylesheet" href="./Styles/plot_solution.css">
+
+    <!-- Настройка MathJax -->
+    <script id="MathJax-options"
+        src="/Scripts/options/setMathJaxOptions.js">
+    </script>
+
+    <!-- MathJax для отображения формул LaTeX -->
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+    </script>
+
+    <!-- math.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjs"></script>
+
+    <!-- numeric.js -->
+    <script src="https://cdn.jsdelivr.net/npm/numericjs"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Решение Галеркиным -->
+    <script id="Galerkin-script" type="module" src="/Scripts/Galerkin/main.js"></script>
+</script>
+</head>
+<body>
+    <section id="boundary-problems">
+        <h2>Линейные краевые задачи второго порядка</h2>
+        <p>
+            Рассмотрим дифференциальное уравнение второго порядка:
+        </p>
+    
+        <div class="equation math-container">
+            $$u''(x) + p(x)u'(x) + q(x)u = f(x), \quad x \in [a, b]$$
+        </div>
+    
+        <p>
+            Краевые условия должны быть линейно независимыми и не противоречивыми.
+            Всего должно быть два скалярных условия, например:
+        </p>
+    
+        <ul class="conditions">
+            <li class="condition dirichlet"><strong>Условия Дирихле:</strong>
+                <ul class="math-container">
+                    \(
+                    \begin{cases}
+                        u(a) = \gamma_1 \\
+                        u(b) = \gamma_2
+                    \end{cases}
+                    \)
+                </ul>
+            </li>
+            <li class="condition neumann"><strong>Условия Неймана:</strong>
+                <ul class="math-container">
+                    \(
+                    \begin{cases}
+                        u'(a) = \gamma_1 \\
+                        u'(b) = \gamma_2
+                    \end{cases}
+                    \)
+                </ul>
+            </li>
+            <li class="condition robin"><strong>Условия Робина:</strong>
+                <ul class="math-container">
+                    \(
+                    \begin{cases}
+                        \alpha_1 u'(a) + \beta_1 u(a) = \gamma_1 \\
+                        \alpha_2 u'(b) + \beta_2 u(b) = \gamma_2
+                    \end{cases}
+                    \)
+                </ul>
+            </li>
+        </ul>
+    
+        <p>
+            Эти условия определяют поведение решения на границах интервала $[a, b]$.
+        </p>
+    </section>
+
+    <section id="equation-input">
+        <h2>Ввод уравнения</h2>
+    
+        <div class="equation math-container">
+            $$u''(x) + p(x)u'(x) + q(x)u(x) = f(x), \quad x \in [a, b]$$
+        </div>
+
+        <h3>Функции</h3>
+    
+        <label for="function-a">Функция p(x):</label>
+        <input type="text" id="function-p" placeholder="Например: 0.5*x или Math.sin(x)" value="-2*x">
+    
+        <label for="function-b">Функция q(x):</label>
+        <input type="text" id="function-q" placeholder="Например: x**2 или 1" value="2">
+    
+        <label for="function-f">Функция f(x):</label>
+        <input type="text" id="function-f" placeholder="Например: Math.exp(-x)" value="x">
+    
+        <h3>Интервал [a, b]:</h3>
+
+        <label for="function-a">a:</label>
+        <input type="number" id="interval-a" value="0" step="0.1">
+
+        <label for="function-b">b:</label>
+        <input type="number" id="interval-b" value="1" step="0.1">
+
+        <h3>Коэффициенты условия Робина</h3>
+        <div class="equation math-container">
+            $$
+            \begin{cases}
+                \alpha_1 u'(a) + \beta_1 u(a) = \gamma_1 \\
+                \alpha_2 u'(b) + \beta_2 u(b) = \gamma_2
+            \end{cases}
+            $$
+        </div>
+
+        <table class="boundary-table">
+            <tr>
+                <th>i</th>
+                <th>\(\alpha_i\)</th>
+                <th>\(\beta_i\)</th>
+                <th>γ</th>
+            </tr>
+            <tr>
+                <td>\(i = 1\)</td>
+                <td><input type="number" id="coef-alpha1" value="0" step="0.1"></td>
+                <td><input type="number" id="coef-beta1" value="1" step="0.1"></td>
+                <td><input type="number" id="coef-gamma1" value="0" step="0.1"></td>
+            </tr>
+            <tr>
+                <td>\(i = 2\)</td>
+                <td><input type="number" id="coef-alpha2" value="1" step="0.1"></td>
+                <td><input type="number" id="coef-beta2" value="0" step="0.1"></td>
+                <td><input type="number" id="coef-gamma2" value="1" step="0.1"></td>
+            </tr>
+        </table>
+    
+        <label for="num-points">Количество точек разбиения:</label>
+        <input type="number" id="num-points" value="10" min="10" max="1000"><br><br>
+    
+        <button id="solveBtn">Решить уравнение</button>
+    </section>
+
+    <section id="plot-solution">
+        <canvas id="solutionChart" width="800" height="400"></canvas>
+    </section>
+</body>
+</html>

@@ -1,0 +1,71 @@
+#equation-input {
+    max-width: 800px;
+    margin: 10px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+#equation-input h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+#equation-input h3 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+#equation-input p {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+#equation-input label {
+    display: block;
+    font-weight: bold;
+    margin-top: 15px;
+    color: #555;
+}
+
+#equation-input input[type="text"],
+#equation-input input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+#equation-input input[type="text"]:focus,
+#equation-input input[type="number"]:focus {
+    border-color: #007BFF;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+#equation-input button {
+    margin-top: 25px;
+    padding: 12px 20px;
+    font-size: 16px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+#equation-input button:hover {
+    background-color: #0056b3;
+}
