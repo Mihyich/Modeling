@@ -9,18 +9,13 @@
     <link rel="stylesheet" href="./Styles/plot_solution.css">
 
     <!-- Настройка MathJax -->
-    <script id="MathJax-options" async
+    <script id="MathJax-options"
         src="/Scripts/options/setMathJaxOptions.js">
     </script>
 
     <!-- MathJax для отображения формул LaTeX -->
-    <script id="MathJax-script" async
-        src="/MathJax/es5/tex-mml-chtml.js">
-    </script>
-
-    <!-- Настройка отображения условий -->
-    <script id="Condition-options" async
-        src="/Scripts/options/conditionSwitcher.js">
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
     </script>
 
     <!-- math.js -->
@@ -44,7 +39,7 @@
         </p>
     
         <div class="equation math-container">
-            $u''(x) + p(x)u'(x) + q(x)u = f(x), \quad x \in [a, b]$
+            $$u''(x) + p(x)u'(x) + q(x)u = f(x), \quad x \in [a, b]$$
         </div>
     
         <p>
@@ -55,32 +50,32 @@
         <ul class="conditions">
             <li class="condition dirichlet"><strong>Условия Дирихле:</strong>
                 <ul class="math-container">
-                    $
+                    \(
                     \begin{cases}
                         u(a) = \gamma_1 \\
                         u(b) = \gamma_2
                     \end{cases}
-                    $
+                    \)
                 </ul>
             </li>
             <li class="condition neumann"><strong>Условия Неймана:</strong>
                 <ul class="math-container">
-                    $
+                    \(
                     \begin{cases}
                         u'(a) = \gamma_1 \\
                         u'(b) = \gamma_2
                     \end{cases}
-                    $
+                    \)
                 </ul>
             </li>
             <li class="condition robin"><strong>Условия Робина:</strong>
                 <ul class="math-container">
-                    $
+                    \(
                     \begin{cases}
                         \alpha_1 u'(a) + \beta_1 u(a) = \gamma_1 \\
                         \alpha_2 u'(b) + \beta_2 u(b) = \gamma_2
                     \end{cases}
-                    $
+                    \)
                 </ul>
             </li>
         </ul>
@@ -118,29 +113,29 @@
 
         <h3>Коэффициенты условия Робина</h3>
         <div class="equation math-container">
-            $
+            $$
             \begin{cases}
                 \alpha_1 u'(a) + \beta_1 u(a) = \gamma_1 \\
                 \alpha_2 u'(b) + \beta_2 u(b) = \gamma_2
             \end{cases}
-            $
+            $$
         </div>
 
         <table class="boundary-table">
             <tr>
                 <th>i</th>
-                <th>$\alpha_i$</th>
-                <th>$\beta_i$</th>
+                <th>\(\alpha_i\)</th>
+                <th>\(\beta_i\)</th>
                 <th>γ</th>
             </tr>
             <tr>
-                <td>$i = 1$</td>
+                <td>\(i = 1\)</td>
                 <td><input type="number" id="coef-alpha1" value="0" step="0.1"></td>
                 <td><input type="number" id="coef-beta1" value="1" step="0.1"></td>
                 <td><input type="number" id="coef-gamma1" value="0" step="0.1"></td>
             </tr>
             <tr>
-                <td>$i = 2$</td>
+                <td>\(i = 2\)</td>
                 <td><input type="number" id="coef-alpha2" value="1" step="0.1"></td>
                 <td><input type="number" id="coef-beta2" value="0" step="0.1"></td>
                 <td><input type="number" id="coef-gamma2" value="1" step="0.1"></td>
