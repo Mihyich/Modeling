@@ -166,11 +166,11 @@ def solutePDE(
 
     h = R / N
     r = [n * h for n in range(N+1)]
-    Tprev = [TempField(ri, R, T0, Tw, p) for ri in r]
+    Tprev = [TempField(ri, T0, Tw, R, p) for ri in r]
     Thistory = [Tprev.copy()]
 
     for s in range(S + 1):
-        print(f"Шаг по времени {s}/{S}")
+        # print(f"Шаг по времени {s}/{S}")
 
         t_current = s * tau
 
