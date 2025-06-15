@@ -4,6 +4,9 @@ from pathlib import Path
 filePathODE = Path.cwd() / Path("lab4/dataODE.csv")
 filePathPDE = Path.cwd() / Path("lab4/dataPDE.csv")
 
+# Папка сохранения графиков
+folderPathPlot = Path.cwd() / Path("lab4/plots")
+
 # Вариант
 variant = 1
 
@@ -23,7 +26,7 @@ R = 0.35
 c = 3*10**10
 
 # Амплитуда импульса тока
-I_max = 1000
+I_max = 300
 
 # Время достижения амплитуды импульса тока
 t_max = 80e-6
