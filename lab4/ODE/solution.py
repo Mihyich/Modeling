@@ -1,4 +1,4 @@
-from Core.utility import logInterpXT, Plank
+from Core.utility import interp, linearInterp, Plank, soluteTriSys
 
 
 def soluteODE(
@@ -12,75 +12,57 @@ def soluteODE(
     """Решение ОДУ"""
 
     h = R / N
-    r = [i / N * R for i in range(0, N + 1)]
-    u_p = [Plank(ri, T0, Tw, R, p) for ri in r]
-    kinterp = [logInterpXT(T_table, K_table, Ti) for Ti in T]
+    r = [i * h for i in range(N+1)]
+    # u_p = [Plank(ri, T0, Tw, R, p) for ri in r]
+    u_p = [Plank(ti, T0, Tw, R, p) for ti in T]
+    kinterp = [interp(T_table, K_table, ti, linearInterp) for ti in T]
 
-    A = [0] * (N+1)
-    B = [0] * (N+1)
-    C = [0] * (N+1)
-    F = [0] * (N+1)
+    # Коэффициенты системы
+    A = [1 / k for k in kinterp]
+    B = [3 * k for k in kinterp]
+    C = [3 * k * up for k, up in zip(kinterp, u_p)]
+    F = [2 * (A[i] * A[i+1]) / (A[i] + A[i+1]) for i in range(N)]
 
-    rmp = lambda i: r[i] + h / 2
-    rmm = lambda i: r[i] - h / 2
+    rh = [(r[i] + r[i+1]) / 2 for i in range(N)]
 
-    kmp = lambda i: (kinterp[i] + kinterp[i + 1]) / 2
-    kmm = lambda i: (kinterp[i - 1] + kinterp[i]) / 2
+    y = [0.0] * (N+1)
+    zita = [0.0] * (N+1)
+    ita = [0.0] * (N+1)
 
-    alphamp = lambda i: rmp(i) / (h * kmp(i))
-    alphamm = lambda i: rmm(i) / (h * kmm(i))
-
-    betamp = lambda i: 3 * h * rmp(i) * kmp(i) / 4
-    betamm = lambda i: 3 * h * rmm(i) * kmm(i) / 4
-
-    Af = lambda i: alphamm(i) - betamm(i)
-    Bf = lambda i: -alphamp(i) - alphamm(i) - betamm(i) - betamp(i)
-    Cf = lambda i: alphamp(i) - betamp(i)
-    Ff = lambda i: -betamm(i) * u_p[i - 1] - (betamm(i) + betamp(i)) * u_p[i] - betamp(i) * u_p[i + 1]
-
-    # Граничное условие в центре (i=0)
-    A[0] = 0.0
-    B[0] = 1.0
-    C[0] = -1.0  # u[0] = u[1]
-    F[0] = 0.0
-
-    # Внутренние точки (i = 1 ... N-1)
-    for i in range(1, N):
-        A[i] = Af(i)
-        B[i] = Bf(i)
-        C[i] = Cf(i)
-        F[i] = Ff(i)
-    
-    # Граничное условие при r=R (i=N)
-    A[N] = 1.0
-    B[N] = -4.0
-    C[N] = 3 + 2.34 * h * kinterp[N]
-    F[N] = 0.0
-
-    # Метод прогонки
-    u = [0] * (N+1)
-    zita = [0] * (N+1)
-    ita = [0] * (N+1)
-
-    # Граничное условие при i=0 для u[i], r=0 (центр)
+    # Левое граничное условие (при r=0)
     zita[0] = 1.0
     ita[0] = 0.0
 
-    # Прямой ход
-    for i in range(1, N+1):
-        denom = B[i] + A[i] * zita[i-1]
-        zita[i] = -C[i] / denom
-        ita[i] = (F[i] - A[i] * ita[i-1]) / denom
+    # Прямой ход - вычисление прогоночных коэффициентов
+    for i in range(1, N):
+        rhl = rh[i-1]
+        rhr = rh[i]
+        V = (rhr**2 - rhl**2) / 2
+        
+        a_i = rhl * F[i-1] / (R**2 * h)
+        d_i = rhr * F[i] / (R**2 * h)
+        b_i = a_i + d_i + B[i] * V
+        f_i = C[i] * V
+        
+        denominator = b_i - a_i * zita[i-1]
+        zita[i] = d_i / denominator
+        ita[i] = (a_i * ita[i-1] + f_i) / denominator
 
-    # Граничное условие при i=N для u[i], r=R (стенка)
-    denom = 3 + 2.34 * h * kinterp[N] + 4 * zita[N] - zita[N-1] * zita[N]
-    u[N] = (4 * ita[N] - zita[N-1] * ita[N] - ita[N-1]) / denom
+    # Правое граничное условие (при z=R)
+    Mn = (rh[N-1] * F[N-1]) / (R**2 * h)
+    Kn = -(r[N] * 3 * 0.39 / R + (rh[N-1] * F[N-1]) / (R**2 * h) + B[N] * r[N] * h / 2)
+    Qn = -C[N] * r[N] * h / 2
     
-    # Обратный ход
-    for i in range(N-1, 0, -1):
-        u[i] = zita[i] * u[i+1] + ita[i]
-    
-    # Граничное условие при i=N для u[i], r=R (стенка): u_0 = u_1
-    u[0] = u[1]
-    
-    return r, kinterp, u, u_p
+    y[N] = (Qn - Mn * ita[N-1]) / (Mn * zita[N-1] + Kn)
+
+    # Обратный ход - вычисление решения
+    for i in range(N-1, -1, -1):
+        y[i] = zita[i] * y[i+1] + ita[i]
+
+    # try:
+    #     u = soluteTriSys(A, B, C, F)
+    # except ZeroDivisionError as e:
+    #     print(f"[Ошибка]: {e}")
+    #     u = [0.0] * (N+1)
+
+    return r, kinterp, y, u_p
