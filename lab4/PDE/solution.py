@@ -77,7 +77,7 @@ def iteration_layer(
 
             B[i] = A[i] + C[i] + cTs[i] * r[i] * h
 
-            F[i] = (cTs[i] * T_prev[i] * r[i] * h +""" """ """ """  """ """ """ """
+            F[i] = (cTs[i] * T_prev[i] * r[i] * h +
                     sigmas[i] * (E ** 2) * r[i] * h * tau -
                     q[i] * r[i] * h * tau)
 
