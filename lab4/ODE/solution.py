@@ -48,7 +48,7 @@ def soluteODE(
         zita[i] = d_i / denominator
         ita[i] = (a_i * ita[i-1] + f_i) / denominator
 
-    # Правое граничное условие (при z=R)
+    # Правое граничное условие (при r=R)
     Mn = (rh[N-1] * F[N-1]) / (R**2 * h)
     Kn = -(r[N] * 3 * 0.39 / R + (rh[N-1] * F[N-1]) / (R**2 * h) + B[N] * r[N] * h / 2)
     Qn = -C[N] * r[N] * h / 2
@@ -58,11 +58,5 @@ def soluteODE(
     # Обратный ход - вычисление решения
     for i in range(N-1, -1, -1):
         y[i] = zita[i] * y[i+1] + ita[i]
-
-    # try:
-    #     u = soluteTriSys(A, B, C, F)
-    # except ZeroDivisionError as e:
-    #     print(f"[Ошибка]: {e}")
-    #     u = [0.0] * (N+1)
 
     return r, kinterp, y, u_p
