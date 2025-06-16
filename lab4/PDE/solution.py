@@ -5,7 +5,7 @@ from Core.plotter import Plotter
 from ODE.solution import soluteODE
 
 
-def crank_nicolson_step(
+def iteration_layer(
     T_prev: list[float],
     r: list[float],
     h: float,
@@ -51,7 +51,7 @@ def crank_nicolson_step(
         _, kinterp, u, u_p = soluteODE(N, T0, Tw, R, p, T_new, T_tableODE, K_table)
 
         # 3. Пересчёт источника тепла q(r)
-        q = [c * kinterp[i] * (u_p[i] - u[i]) for i in range(N)]
+        q = [c * kinterp[i] * (u_p[i] - u[i]) for i in range(N+1)]
 
         # 4. Расчёт напряжённости электрического поля E(t)
         E = ElectricFieldStrenght(
@@ -77,7 +77,7 @@ def crank_nicolson_step(
 
             B[i] = A[i] + C[i] + cTs[i] * r[i] * h
 
-            F[i] = (cTs[i] * T_prev[i] * r[i] * h +
+            F[i] = (cTs[i] * T_prev[i] * r[i] * h +""" """ """ """  """ """ """ """
                     sigmas[i] * (E ** 2) * r[i] * h * tau -
                     q[i] * r[i] * h * tau)
 
@@ -130,7 +130,7 @@ def solutePDE(
         print(f"Шаг по времени {s}/{S}")
 
         # 1. Метод итераций
-        T_new, E = crank_nicolson_step(Tprev, r, h, tau, T0, Tw, R, p, I_max, t_max, T_tableODE, K_table, T_tablePDE, sigma_table, lambda_table, cT_table, plotter, s)
+        T_new, E = iteration_layer(Tprev, r, h, tau, T0, Tw, R, p, I_max, t_max, T_tableODE, K_table, T_tablePDE, sigma_table, lambda_table, cT_table, plotter, s)
         Evalues += [E]
 
         # 2. Сохранить результат
